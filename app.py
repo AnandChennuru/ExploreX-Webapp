@@ -4,7 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date, timedelta
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', "sqlite:///explorex.db")
+
+database_url = os.environ.get("DATABASE_URL")
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace(
+        "postgres://",
+        "postgresql://",
+        1
+    )
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    database_url or "sqlite:///explorex.db"
+)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "explorex_secret_dev_only")
 app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 db = SQLAlchemy(app)
@@ -330,6 +340,7 @@ def history():
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()
+    print(app.config["SQLALCHEMY_DATABASE_URI"])
     app.run(debug=app.config['DEBUG'])
 
 # my code 
