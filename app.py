@@ -111,7 +111,7 @@ def login():
             db.session.commit()
         session['user_id'] = user.id
         return redirect('/')
-    return render_template('login.html', title='Student Productivity Tracker')
+    return render_template('login.html', title='Login')
 
 
 @app.route('/logout')
